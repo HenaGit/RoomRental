@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RoomRental.Domain.Entities;
 using RoomRental.Infrastructure.Data;
 
 namespace RoomRental.Web.Controllers
@@ -20,6 +21,13 @@ namespace RoomRental.Web.Controllers
         public IActionResult Create()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult Create(Villa obj)
+        {
+            _db.Villas.Add(obj);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
     }
 }
