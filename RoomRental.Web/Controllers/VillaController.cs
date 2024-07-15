@@ -59,5 +59,14 @@ namespace RoomRental.Web.Controllers
             }
             return View();
         }
+        public IActionResult Delete(int villaId)
+        {
+            Villa? obj = _db.Villas.FirstOrDefault(u => u.Id == villaId);
+            if (obj == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(obj);
+        }
     }
 }
