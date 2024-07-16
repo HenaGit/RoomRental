@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using RoomRental.Domain.Entities;
 using RoomRental.Infrastructure.Data;
 using RoomRental.Web.ViewModels;
@@ -17,7 +18,7 @@ namespace RoomRental.Web.Controllers
 
         public IActionResult Index()
         {
-            var villaNumbers = _db.VillaNumbers.ToList();
+            var villaNumbers = _db.VillaNumbers.Include(u => u.Villa).ToList();
             return View(villaNumbers);
         }
 
