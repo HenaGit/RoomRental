@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RoomRental.Domain.Entities;
 using RoomRental.Infrastructure.Data;
 
@@ -21,6 +22,12 @@ namespace RoomRental.Web.Controllers
 
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> list = _db.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+            ViewData["VillaList"] = list;
             return View();
         }
 
