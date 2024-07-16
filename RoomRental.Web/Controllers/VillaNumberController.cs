@@ -27,7 +27,7 @@ namespace RoomRental.Web.Controllers
         [HttpPost]
         public IActionResult Create(VillaNumber obj)
         {
-          
+            //ModelState.Remove("Villa");
             if (ModelState.IsValid)
             {
                 _db.VillaNumbers.Add(obj);
