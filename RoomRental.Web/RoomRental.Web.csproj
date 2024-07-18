@@ -15,11 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RoomRental.Infrastructure\RoomRental.Infrastructure.csproj" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\" />
+    <ProjectReference Include="..\RoomRental.Application\RoomRental.Application.csproj" />
+    <ProjectReference Include="..\RoomRental.Infrastructure\RoomRental.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
