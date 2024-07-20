@@ -59,8 +59,7 @@ namespace RoomRental.Web.Controllers
         public IActionResult Update(int villaId)
         {
             Villa? obj = _unitOfWork.Villa.Get(u => u.Id == villaId);
-            //Villa? obj = _db.Villas.Find(villaId);
-            //var VillaList = _db.Villas.Where(u => u.Price > 50 && u.Occupancy > 0);
+           
             if (obj == null)
             {
                 return RedirectToAction("Error", "Home");
@@ -72,6 +71,26 @@ namespace RoomRental.Web.Controllers
         {
             if (ModelState.IsValid && obj.Id > 0)
             {
+                if (obj.Image != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(obj.Image.FileName);
+                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\VillaImage");
+
+                    if (!string.IsNullOrEmpty(obj.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('\\'));
+
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+                    obj.Image.CopyTo(fileStream);
+
+                    obj.ImageUrl = @"\images\VillaImage\" + fileName;
+                }
                 _unitOfWork.Villa.Update(obj);
                 _unitOfWork.Save();
                 TempData["success"] = "The villa has been updated successfully.";
