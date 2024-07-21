@@ -111,7 +111,8 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body m-0">
-                                    <div class="row">
+                                    <partial name="_VillaDetail" model="@villa" />
+                                   @*  <div class="row">
                                         <div class="col-12 col-md-5">
                                             <img src="@villa.ImageUrl" style="border-radius:10px;" width="100%" />
                                         </div>
@@ -147,7 +148,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> *@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
