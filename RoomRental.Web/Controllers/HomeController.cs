@@ -1,21 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
+using RoomRental.Application.Common.Interfaces;
 using RoomRental.Web.Models;
+using RoomRental.Web.ViewModels;
 using System.Diagnostics;
 
 namespace RoomRental.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IUnitOfWork _unitOfWork;
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            return View();
+            HomeVM homeVM = new()
+            {
+                VillaList = _unitOfWork.Villa.GetAll(),
+                Nights = 1,
+                CheckInDate = DateOnly.FromDateTime(DateTime.Now),
+            };
+            return View(homeVM);
         }
 
         public IActionResult Privacy()
