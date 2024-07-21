@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RoomRental.Application.Common.Interfaces;
 using RoomRental.Domain.Entities;
 using RoomRental.Infrastructure.Data;
@@ -6,6 +7,7 @@ using RoomRental.Infrastructure.Repository;
 
 namespace RoomRental.Web.Controllers
 {
+    [Authorize]
     public class VillaController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

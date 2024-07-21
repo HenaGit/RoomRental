@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RoomRental.Application.Common.Interfaces;
+using RoomRental.Application.Common.Utility;
 using RoomRental.Domain.Entities;
 using RoomRental.Web.ViewModels;
 
 namespace RoomRental.Web.Controllers
 {
+    [Authorize(Roles = SD.Role_Admin)]
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
