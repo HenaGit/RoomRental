@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RoomRental.Application.Common.Interfaces;
 using RoomRental.Domain.Entities;
+using RoomRental.Web.ViewModels;
 
 namespace RoomRental.Web.Controllers
 {
@@ -22,9 +23,16 @@ namespace RoomRental.Web.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
-            return View();
+            returnUrl ??= Url.Content("~/");
+
+            LoginVM loginVM = new()
+            {
+                RedirectUrl = returnUrl
+            };
+
+            return View(loginVM);
         }
 
         public IActionResult Register()
