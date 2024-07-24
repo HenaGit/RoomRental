@@ -53,9 +53,7 @@ namespace RoomRental.Web.Controllers
         public IActionResult Privacy()
         {
             return View();
-        }
-
-        
+        }     
         public IActionResult Error()
         {
             return View();

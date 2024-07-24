@@ -17,7 +17,6 @@ namespace RoomRental.Web.Controllers
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
         }
-
         public IActionResult Index()
         {
             var villas = _unitOfWork.Villa.GetAll();

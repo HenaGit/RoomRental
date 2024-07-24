@@ -36,7 +36,6 @@ namespace RoomRental.Infrastructure.Repository
             }
             if (!string.IsNullOrEmpty(includeProperties))
             {
-                //Villa,VillaNumber -- case sensitive
                 foreach (var includeProp in includeProperties
                     .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
