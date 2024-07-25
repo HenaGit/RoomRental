@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RoomRental.Application.Common.Interfaces;
 using RoomRental.Domain.Entities;
+using System.Security.Claims;
 
 namespace RoomRental.Web.Controllers
 {
@@ -11,8 +13,13 @@ namespace RoomRental.Web.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [Authorize]
         public IActionResult FinalizeBooking(int villaId, DateOnly checkInDate, int nights)
         {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            ApplicationUser user = _unitOfWork.User.Get(u => u.Id == userId);
             Booking booking = new()
             {
                 VillaId = villaId,
@@ -20,6 +27,10 @@ namespace RoomRental.Web.Controllers
                 CheckInDate = checkInDate,
                 Nights = nights,
                 CheckOutDate = checkInDate.AddDays(nights),
+                UserId = userId,
+                Phone = user.PhoneNumber,
+                Email = user.Email,
+                Name = user.Name
             };
             booking.TotalCost = booking.Villa.Price * nights;
             return View(booking);
