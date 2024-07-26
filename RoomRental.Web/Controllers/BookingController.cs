@@ -37,6 +37,10 @@ namespace RoomRental.Web.Controllers
             booking.TotalCost = booking.Villa.Price * nights;
             return View(booking);
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
         [Authorize]
         [HttpPost]
         public IActionResult FinalizeBooking(Booking booking)
