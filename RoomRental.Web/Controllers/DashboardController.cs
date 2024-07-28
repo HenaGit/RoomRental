@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RoomRental.Application.Common.Interfaces;
 using RoomRental.Application.Common.Utility;
+using RoomRental.Web.ViewModels;
 
 namespace RoomRental.Web.Controllers
 {
@@ -28,6 +29,22 @@ namespace RoomRental.Web.Controllers
 
             var countByPreviousMonth = totalBookings.Count(u => u.BookingDate >= previousMonthStartDate &&
             u.BookingDate <= currentMonthStartDate);
+            RadialBarChartVM radialBarChartVM = new();
+
+
+            int increaseDecreaseRatio = 100;
+
+            if (countByPreviousMonth != 0)
+            {
+                increaseDecreaseRatio = Convert.ToInt32((countByCurrentMonth - countByPreviousMonth) / countByPreviousMonth * 100);
+            }
+
+            radialBarChartVM.TotalCount = totalBookings.Count();
+            radialBarChartVM.CountInCurrentMonth = countByCurrentMonth;
+            radialBarChartVM.HasRatioIncreased = currentMonthStartDate > previousMonthStartDate;
+            radialBarChartVM.Series = new int[] { increaseDecreaseRatio };
+
+            return Json(radialBarChartVM);
 
         }
     }
