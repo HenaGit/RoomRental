@@ -9,6 +9,7 @@ using Syncfusion.DocIO;
 using Syncfusion.DocIORenderer;
 using Syncfusion.Drawing;
 using System.Security.Claims;
+using Syncfusion.Pdf;
 
 namespace RoomRental.Web.Controllers
 {
@@ -152,7 +153,7 @@ namespace RoomRental.Web.Controllers
         }
         [HttpPost]
         [Authorize]
-        public IActionResult GenerateInvoice(int id)
+        public IActionResult GenerateInvoice(int id, string downloadType)
         {
             string basePath = _webHostEnvironment.WebRootPath;
 
@@ -255,10 +256,22 @@ namespace RoomRental.Web.Controllers
             using DocIORenderer renderer = new();
 
             MemoryStream stream = new();
-            document.Save(stream, FormatType.Docx);
-            stream.Position = 0;
+            if (downloadType == "word")
+            {
 
-            return File(stream, "application/docx", "BookingDetails.docx");
+                document.Save(stream, FormatType.Docx);
+                stream.Position = 0;
+
+                return File(stream, "application/docx", "BookingDetails.docx");
+            }
+            else
+            {
+                PdfDocument pdfDocument = renderer.ConvertToPDF(document);
+                pdfDocument.Save(stream);
+                stream.Position = 0;
+
+                return File(stream, "application/pdf", "BookingDetails.pdf");
+            }
 
         }
         [HttpPost]
