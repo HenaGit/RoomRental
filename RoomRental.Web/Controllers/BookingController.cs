@@ -4,6 +4,9 @@ using RoomRental.Application.Common.Interfaces;
 using RoomRental.Application.Common.Utility;
 using RoomRental.Domain.Entities;
 using Stripe.Checkout;
+using Syncfusion.DocIO.DLS;
+using Syncfusion.DocIO;
+using Syncfusion.DocIORenderer;
 using System.Security.Claims;
 
 namespace RoomRental.Web.Controllers
@@ -11,9 +14,11 @@ namespace RoomRental.Web.Controllers
     public class BookingController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BookingController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public BookingController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
         [Authorize]
         public IActionResult FinalizeBooking(int villaId, DateOnly checkInDate, int nights)
@@ -143,6 +148,37 @@ namespace RoomRental.Web.Controllers
                 && availableVillaNumber.Any(x => x == u.Villa_Number)).ToList();
             }
             return View(bookingFromDb);
+        }
+        [HttpPost]
+        [Authorize]
+        public IActionResult GenerateInvoice(int id)
+        {
+            string basePath = _webHostEnvironment.WebRootPath;
+
+            WordDocument document = new WordDocument();
+
+
+            // Load the template.
+            string dataPath = basePath + @"/exports/BookingDetails.docx";
+            using FileStream fileStream = new(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            document.Open(fileStream, FormatType.Automatic);
+
+            //Update Template
+            Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == id,
+                            includeProperties: "User,Villa");
+
+            TextSelection textSelection = document.Find("xx_customer_name", false, true);
+            WTextRange textRange = textSelection.GetAsOneRange();
+            textRange.Text = bookingFromDb.Name;
+
+            using DocIORenderer renderer = new();
+
+            MemoryStream stream = new();
+            document.Save(stream, FormatType.Docx);
+            stream.Position = 0;
+
+            return File(stream, "application/docx", "BookingDetails.docx");
+
         }
         [HttpPost]
         [Authorize(Roles = SD.Role_Admin)]
