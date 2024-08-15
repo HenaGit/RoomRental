@@ -1,6 +1,6 @@
-﻿namespace RoomRental.Web.ViewModels
+﻿namespace RoomRental.Application.Common.DTO
 {
-    public class PieChartVM
+    public class PieChartDto
     {
         public decimal[] Series { get; set; }
         public string[] Labels { get; set; }

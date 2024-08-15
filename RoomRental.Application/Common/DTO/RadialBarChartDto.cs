@@ -1,6 +1,6 @@
-﻿namespace RoomRental.Web.ViewModels
+﻿namespace RoomRental.Application.Common.DTO
 {
-    public class RadialBarChartVM
+    public class RadialBarChartDto
     {
         public decimal TotalCount { get; set; }
         public decimal CountInCurrentMonth { get; set; }

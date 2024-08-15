@@ -1,6 +1,6 @@
-﻿namespace RoomRental.Web.ViewModels
+﻿namespace RoomRental.Application.Common.DTO
 {
-    public class LineChartVM
+    public class LineChartDto
     {
         public List<ChartData> Series { get; set; }
         public string[] Categories { get; set; }
