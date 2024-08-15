@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RoomRental.Application.Common.Interfaces;
+using RoomRental.Application.Services.Implementation;
+using RoomRental.Application.Services.Interface;
 using RoomRental.Domain.Entities;
 using RoomRental.Infrastructure.Data;
 using RoomRental.Infrastructure.Repository;
@@ -25,6 +27,7 @@ builder.Services.Configure<IdentityOptions>(option =>
     
 });
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 var app = builder.Build();
 
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
