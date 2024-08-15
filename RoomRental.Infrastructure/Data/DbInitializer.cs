@@ -39,6 +39,18 @@ namespace RoomRental.Infrastructure.Data
                 {
                     _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).Wait();
                     _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).Wait();
+                    _userManager.CreateAsync(new ApplicationUser
+                    {
+                        UserName = "henokg@insa.gov.et",
+                        Email = "henokg@insa.gov.et",
+                        Name = "Henok Gebrehiwot",
+                        NormalizedUserName = "HENOKG@INSA.GOV.ET",
+                        NormalizedEmail = "HENOKG@INSA.GOV.ET",
+                        PhoneNumber = "0921771647",
+                    }, "P@$$w0rd1979").GetAwaiter().GetResult();
+
+                    ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "henokg@insa.gov.et");
+                    _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
                 }
             }
             catch (Exception e)
