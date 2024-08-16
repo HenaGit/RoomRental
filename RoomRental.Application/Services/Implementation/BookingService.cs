@@ -58,7 +58,7 @@ namespace RoomRental.Application.Services.Implementation
 
         public void UpdateStatus(int bookingId, string bookingStatus, int villaNumber)
         {
-            var bookingFromDb = _unitOfWork.Booking.Get(m => m.Id == bookingId);
+            var bookingFromDb = _unitOfWork.Booking.Get(m => m.Id == bookingId, tracked: true);
             if (bookingFromDb != null)
             {
                 bookingFromDb.Status = bookingStatus;
@@ -72,11 +72,12 @@ namespace RoomRental.Application.Services.Implementation
                     bookingFromDb.ActualCheckOutDate = DateTime.Now;
                 }
             }
+            _unitOfWork.Save();
         }
 
         public void UpdateStripePaymentID(int bookingId, string sessionId, string paymentIntentId)
         {
-            var bookingFromDb = _unitOfWork.Booking.Get(m => m.Id == bookingId);
+            var bookingFromDb = _unitOfWork.Booking.Get(m => m.Id == bookingId, tracked: true);
             if (bookingFromDb != null)
             {
                 if (!string.IsNullOrEmpty(sessionId))
@@ -90,6 +91,7 @@ namespace RoomRental.Application.Services.Implementation
                     bookingFromDb.IsPaymentSuccessful = true;
                 }
             }
+            _unitOfWork.Save();
         }
     }
 }

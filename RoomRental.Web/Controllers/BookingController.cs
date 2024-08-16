@@ -22,11 +22,13 @@ namespace RoomRental.Web.Controllers
         private readonly IVillaService _villaService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IVillaNumberService _villaNumberService;
-        public BookingController(IBookingService bookingService,
+        private readonly IPaymentService _paymentService;
+        public BookingController(IBookingService bookingService, IPaymentService paymentService,
               IVillaService villaService, IVillaNumberService villaNumberService,
               IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
+            _paymentService = paymentService;
             _villaService = villaService;
             _villaNumberService = villaNumberService;
             _bookingService = bookingService;
@@ -85,30 +87,8 @@ namespace RoomRental.Web.Controllers
 
             _bookingService.CreateBooking(booking);
             var domain = Request.Scheme + "://" + Request.Host.Value + "/";
-            var options = new SessionCreateOptions
-            {
-                LineItems = new List<SessionLineItemOptions>(),
-                Mode = "payment",
-                SuccessUrl = domain + $"booking/BookingConfirmation?bookingId={booking.Id}",
-                CancelUrl = domain + $"booking/FinalizeBooking?villaId={booking.VillaId}&checkInDate={booking.CheckInDate}&nights={booking.Nights}",
-            };
-
-            options.LineItems.Add(new SessionLineItemOptions
-            {
-                PriceData = new SessionLineItemPriceDataOptions
-                {
-                    UnitAmount = (long)(booking.TotalCost * 100),
-                    Currency = "usd",
-                    ProductData = new SessionLineItemPriceDataProductDataOptions
-                    {
-                        Name = villa.Name
-                        //Images = new List<string> { domain + villa.ImageUrl },
-                    },
-                },
-                Quantity = 1,
-            });
-            var service = new SessionService();
-            Session session = service.Create(options);
+            var options = _paymentService.CreateStripeSessionOptions(booking, villa, domain);
+            var session = _paymentService.CreateStripeSession(options);
 
             _bookingService.UpdateStripePaymentID(booking.Id, session.Id, session.PaymentIntentId);
 
