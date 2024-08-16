@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RoomRental.Application.Common.Interfaces;
+using RoomRental.Application.Contract;
 using RoomRental.Application.Services.Implementation;
 using RoomRental.Application.Services.Interface;
 using RoomRental.Domain.Entities;
 using RoomRental.Infrastructure.Data;
+using RoomRental.Infrastructure.Emails;
 using RoomRental.Infrastructure.Repository;
 using Stripe;
 using Syncfusion.Licensing;
@@ -34,6 +36,7 @@ builder.Services.AddScoped<IVillaNumberService, VillaNumberService>();
 builder.Services.AddScoped<IAmenityService, AmenityService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();

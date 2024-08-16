@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Syncfusion.Pdf;
 using Microsoft.AspNetCore.Identity;
 using RoomRental.Application.Services.Interface;
+using RoomRental.Application.Contract;
 
 namespace RoomRental.Web.Controllers
 {
@@ -23,12 +24,14 @@ namespace RoomRental.Web.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IVillaNumberService _villaNumberService;
         private readonly IPaymentService _paymentService;
+        private readonly IEmailService _emailService;
         public BookingController(IBookingService bookingService, IPaymentService paymentService,
               IVillaService villaService, IVillaNumberService villaNumberService,
-              IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+              IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager, IEmailService emailService)
         {
             _userManager = userManager;
             _paymentService = paymentService;
+            _emailService = emailService;
             _villaService = villaService;
             _villaNumberService = villaNumberService;
             _bookingService = bookingService;
@@ -112,6 +115,7 @@ namespace RoomRental.Web.Controllers
                 {
                     _bookingService.UpdateStatus(bookingFromDb.Id, SD.StatusApproved, 0);
                     _bookingService.UpdateStripePaymentID(bookingFromDb.Id, session.Id, session.PaymentIntentId);
+                    _emailService.SendEmailAsync(bookingFromDb.Email, "Booking Confirmation - Room Rental", "<p>Your booking has been confirmed. Booking ID - " + bookingFromDb.Id + "</p>");
                 }
             }
             return View(bookingId);
