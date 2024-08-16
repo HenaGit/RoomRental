@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using RoomRental.Application.Common.Interfaces;
+using RoomRental.Application.Common.Utility;
 using RoomRental.Application.Services.Interface;
 using RoomRental.Domain.Entities;
 using System;
@@ -77,6 +78,24 @@ namespace RoomRental.Application.Services.Implementation
         public Villa GetVillaById(int id)
         {
             return _unitOfWork.Villa.Get(u => u.Id == id, includeProperties: "VillaAmenity");
+        }
+        public IEnumerable<Villa> GetVillasAvailabilityByDate(int nights, DateOnly checkInDate)
+        {
+            var villaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
+            var villaNumbersList = _unitOfWork.VillaNumber.GetAll().ToList();
+            var bookedVillas = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusApproved ||
+            u.Status == SD.StatusCheckedIn).ToList();
+
+
+            foreach (var villa in villaList)
+            {
+                int roomAvailable = SD.VillaRoomsAvailable_Count
+                    (villa.Id, villaNumbersList, checkInDate, nights, bookedVillas);
+
+                villa.IsAvailable = roomAvailable > 0 ? true : false;
+            }
+
+            return villaList;
         }
 
         public void UpdateVilla(Villa villa)
